@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <title>영화 감상평 남기기</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <h1>🎬 내 감상평 리스트</h1>
+        
+        <form>
+            <div>
+                <label for="movieTitleInput">영화 제목</label>
+                <input type="text" id="movieTitleInput" />    
+            </div>
+            
+            <div>
+                <label for="movieCommentInput">감상평</label>
+                <textarea 
+                    id="movieCommentInput"
+                    cols="30"
+                    rows="10"
+                    ></textarea>       
+            </div>
+
+            <p id="errorInput" style="color: red; display: none;">
+                영화 제목과 감상평을 모두 입력해주세요!
+            </p>
+            <button id="addBtn">추가</button>
+        </form>
+
+        <ul id="movieList"></ul>
+
+        <script src="main.js"></script>
+    </body>
+</html>
