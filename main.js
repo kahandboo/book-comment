@@ -3,7 +3,7 @@ const authorInput = document.getElementById("bookAuthorInput");
 const commentInput = document.getElementById("bookCommentInput");
 const autocompleteList = document.getElementById("autocompleteList");
 const button = document.getElementById("addBtn");
-const list = document.getElementById("movieList");
+const list = document.getElementById("bookList");
 const errorInput = document.getElementById("errorInput");
 
 titleInput.addEventListener("keyup", async (e) => {
@@ -47,7 +47,7 @@ button.addEventListener("click", (e) => {
     const author = authorInput.value.trim();
     const comment = commentInput.value.trim();
 
-    if (title && comment) {
+    if (title && comment && author) {
         const now = new Date();
         const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
         
@@ -61,7 +61,7 @@ button.addEventListener("click", (e) => {
         const li = document.createElement("li");
         li.innerHTML = `
             <strong>📖 ${title}</strong><br>
-            <span class="author">✍️ 저자: ${author}</span><br> 
+            <span class="author">✍️ ${author}</span><br> 
             <div class="comment">💬 ${comment}</div>
             <div class="date">${dateStr}</div>`;
         list.appendChild(li);
@@ -90,11 +90,12 @@ button.addEventListener("click", (e) => {
 window.addEventListener("DOMContentLoaded", () => {
     const savedList = JSON.parse(localStorage.getItem("commentList")) || [];
 
-    savedList.forEach(({ title, comment, date }) => {
+    savedList.forEach(({ title, author, comment, date }) => {
         const li = document.createElement("li");
         li.innerHTML = `
-            <strong>🎥 ${title}</strong><br>
-            💬 ${comment}
+            <strong>📖 ${title}</strong><br>
+            <span class="author">✍️ ${author}</span><br> 
+            <div class="comment">💬 ${comment}</div>
             <div class="date">${date}</div>`;
         list.appendChild(li);
     });

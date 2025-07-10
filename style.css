@@ -34,11 +34,9 @@ label {
 }
 
 .autocomplete-box {
-    border: 1px solid #ccc;
     max-height: 200px;
     overflow-y: auto;
     background-color: white;
-    position: absolute;
     width: 100%;
     z-index: 10;
     list-style: none;
