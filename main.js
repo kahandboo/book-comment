@@ -1,10 +1,45 @@
 const titleInput = document.getElementById("bookTitleInput");
 const authorInput = document.getElementById("bookAuthorInput");
 const commentInput = document.getElementById("bookCommentInput");
+const autocompleteList = document.getElementById("autocompleteList");
 const button = document.getElementById("addBtn");
 const list = document.getElementById("movieList");
 const errorInput = document.getElementById("errorInput");
 
+titleInput.addEventListener("keyup", async (e) => {
+    const query = titleInput.value.trim();
+
+    if (query.length < 2) {
+        autocompleteList.innerHTML = "";
+        return;
+    }
+
+    try {
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(query)}`);
+        const data = await res.json();
+
+        autocompleteList.innerHTML = "";
+
+        const books = data.items?.slice(0, 5) || [];
+        books.forEach(book => {
+            const title = book.volumeInfo.title || "제목 없음";
+            const authors = book.volumeInfo.authors?.join(", ") || "저자 미상";
+
+            const li = document.createElement("li");
+            li.textContent = `${title} - ${authors}`;
+
+            li.addEventListener("click", () => {
+                titleInput.value = title;
+                authorInput.value = authors;
+                autocompleteList.innerHTML = "";
+            });
+
+            autocompleteList.appendChild(li);
+        });
+    } catch (err) {
+        console.error("책 검색 중 오류 발생:", err);
+    }
+});
 
 button.addEventListener("click", (e) => {
     e.preventDefault();
