@@ -23,7 +23,7 @@ titleInput.addEventListener("keyup", async (e) => {
         const books = data.items?.slice(0, 5) || [];
         books.forEach(book => {
             const title = book.volumeInfo.title || "제목 없음";
-            const authors = book.volumeInfo.authors?.join(", ") || "저자 미상";
+            const authors = book.volumeInfo.authors?.join(", ") || "미상";
 
             const li = document.createElement("li");
             li.textContent = `${title} - ${authors}`;
@@ -63,8 +63,14 @@ button.addEventListener("click", (e) => {
             <strong>📖 ${title}</strong><br>
             <span class="author">✍️ ${author}</span><br> 
             <div class="comment">💬 ${comment}</div>
-            <div class="date">${dateStr}</div>`;
+            <div class="date">${dateStr}</div>
+            <button class="editBtn">수정</button>
+            <button class="deleteBtn">삭제</button>`;
+
         list.appendChild(li);
+
+        const editBtn = li.querySelector(".editBtn");
+        const deleteBtn = li.querySelector(".deleteBtn");
         
         let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
         commentList.push(commentObj);
@@ -74,6 +80,26 @@ button.addEventListener("click", (e) => {
         authorInput.value = "";
         commentInput.value = "";
         
+        editBtn.addEventListener("click", () => {
+            titleInput.value = title;
+            authorInput.value = author;
+            commentInput.value = comment;
+        
+            let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
+            commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
+            localStorage.setItem("commentList", JSON.stringify(commentList));
+            li.remove();
+        });
+        
+        deleteBtn.addEventListener("click", () => {
+            const deleteOk = confirm("정말 삭제하시겠습니까?");
+            if (!deleteOk) return;
+
+            let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
+            commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
+            localStorage.setItem("commentList", JSON.stringify(commentList));
+            li.remove();
+        });
 
         titleInput.style.border = "";
         commentInput.style.border = "";
@@ -85,7 +111,9 @@ button.addEventListener("click", (e) => {
         if (!comment) commentInput.style.border = "2px solid red"
         if (!author) authorInput.style.border = "2px solid red";
     }
-})
+});
+
+
 
 window.addEventListener("DOMContentLoaded", () => {
     const savedList = JSON.parse(localStorage.getItem("commentList")) || [];
@@ -96,7 +124,33 @@ window.addEventListener("DOMContentLoaded", () => {
             <strong>📖 ${title}</strong><br>
             <span class="author">✍️ ${author}</span><br> 
             <div class="comment">💬 ${comment}</div>
-            <div class="date">${date}</div>`;
+            <div class="date">${date}</div>
+            <button class="editBtn">수정</button>
+            <button class="deleteBtn">삭제</button>`;
         list.appendChild(li);
+
+        const editBtn = li.querySelector(".editBtn");
+        const deleteBtn = li.querySelector(".deleteBtn");
+
+        editBtn.addEventListener("click", () => {
+            titleInput.value = title;
+            authorInput.value = author;
+            commentInput.value = comment;
+        
+            let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
+            commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
+            localStorage.setItem("commentList", JSON.stringify(commentList));
+            li.remove();
+        });
+        
+        deleteBtn.addEventListener("click", () => {
+            const deleteOk = confirm("정말 삭제하시겠습니까?");
+            if (!deleteOk) return;
+
+            let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
+            commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
+            localStorage.setItem("commentList", JSON.stringify(commentList));
+            li.remove();
+        });
     });
 });

@@ -45,7 +45,7 @@ label {
 }
 
 .autocomplete-box li {
-    padding: 8px;
+    padding: 5px;
     cursor: pointer;
 }
 
@@ -59,7 +59,7 @@ label {
     display: none;
 }
 
-button {
+button#addBtn {
     padding: 0.6rem;
     font-weight: bold;
     cursor: pointer;
@@ -67,6 +67,15 @@ button {
     color: white;
     border: none;
     border-radius: 5px;
+}
+
+button.editBtn, 
+button.deleteBtn {
+    font-size: 10px;
+    cursor: pointer;
+    background-color: white;
+    border: none;
+    border-radius: 7px;
 }
 
 ul#bookList {
