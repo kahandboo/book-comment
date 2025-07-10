@@ -6,6 +6,43 @@ const button = document.getElementById("addBtn");
 const list = document.getElementById("bookList");
 const errorInput = document.getElementById("errorInput");
 
+function createCommentElement({title, author, comment, date}) {
+    const li = document.createElement("li");
+    li.innerHTML = `
+        <strong>📖 ${title}</strong><br>
+        <span class="author">✍️ ${author}</span><br> 
+        <div class="comment">💬 ${comment}</div>
+        <div class="date">${date}</div>
+        <button class="editBtn">수정</button>
+        <button class="deleteBtn">삭제</button>`;
+
+    const editBtn = li.querySelector(".editBtn");
+    const deleteBtn = li.querySelector(".deleteBtn");
+
+    editBtn.addEventListener("click", () => {
+        titleInput.value = title;
+        authorInput.value = author;
+        commentInput.value = comment;
+    
+        let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
+        commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
+        localStorage.setItem("commentList", JSON.stringify(commentList));
+        li.remove();
+    });
+    
+    deleteBtn.addEventListener("click", () => {
+        const deleteOk = confirm("정말 삭제하시겠습니까?");
+        if (!deleteOk) return;
+
+        let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
+        commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
+        localStorage.setItem("commentList", JSON.stringify(commentList));
+        li.remove();
+    });
+
+    return li;
+}
+
 titleInput.addEventListener("keyup", async (e) => {
     const query = titleInput.value.trim();
 
@@ -50,7 +87,7 @@ button.addEventListener("click", (e) => {
     if (title && comment && author) {
         const now = new Date();
         const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-        
+
         const commentObj = {
             title,
             author,
@@ -58,49 +95,17 @@ button.addEventListener("click", (e) => {
             date: dateStr
         };
 
-        const li = document.createElement("li");
-        li.innerHTML = `
-            <strong>📖 ${title}</strong><br>
-            <span class="author">✍️ ${author}</span><br> 
-            <div class="comment">💬 ${comment}</div>
-            <div class="date">${dateStr}</div>
-            <button class="editBtn">수정</button>
-            <button class="deleteBtn">삭제</button>`;
-
+        const li = createCommentElement(commentObj);
         list.appendChild(li);
 
-        const editBtn = li.querySelector(".editBtn");
-        const deleteBtn = li.querySelector(".deleteBtn");
-        
         let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
         commentList.push(commentObj);
-        localStorage.setItem("commentList", JSON.stringify(commentList));
+        localStorage.setItem("commentList", JSON.stringify(commentList));    
 
         titleInput.value = "";
         authorInput.value = "";
         commentInput.value = "";
-        
-        editBtn.addEventListener("click", () => {
-            titleInput.value = title;
-            authorInput.value = author;
-            commentInput.value = comment;
-        
-            let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
-            commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
-            localStorage.setItem("commentList", JSON.stringify(commentList));
-            li.remove();
-        });
-        
-        deleteBtn.addEventListener("click", () => {
-            const deleteOk = confirm("정말 삭제하시겠습니까?");
-            if (!deleteOk) return;
-
-            let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
-            commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
-            localStorage.setItem("commentList", JSON.stringify(commentList));
-            li.remove();
-        });
-
+            
         titleInput.style.border = "";
         commentInput.style.border = "";
         authorInput.style.border = "";
@@ -118,39 +123,8 @@ button.addEventListener("click", (e) => {
 window.addEventListener("DOMContentLoaded", () => {
     const savedList = JSON.parse(localStorage.getItem("commentList")) || [];
 
-    savedList.forEach(({ title, author, comment, date }) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-            <strong>📖 ${title}</strong><br>
-            <span class="author">✍️ ${author}</span><br> 
-            <div class="comment">💬 ${comment}</div>
-            <div class="date">${date}</div>
-            <button class="editBtn">수정</button>
-            <button class="deleteBtn">삭제</button>`;
+    savedList.forEach((commentInfo) => {
+        const li = createCommentElement(commentInfo);
         list.appendChild(li);
-
-        const editBtn = li.querySelector(".editBtn");
-        const deleteBtn = li.querySelector(".deleteBtn");
-
-        editBtn.addEventListener("click", () => {
-            titleInput.value = title;
-            authorInput.value = author;
-            commentInput.value = comment;
-        
-            let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
-            commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
-            localStorage.setItem("commentList", JSON.stringify(commentList));
-            li.remove();
-        });
-        
-        deleteBtn.addEventListener("click", () => {
-            const deleteOk = confirm("정말 삭제하시겠습니까?");
-            if (!deleteOk) return;
-
-            let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
-            commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
-            localStorage.setItem("commentList", JSON.stringify(commentList));
-            li.remove();
-        });
     });
 });
