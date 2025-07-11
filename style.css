@@ -99,3 +99,33 @@ li .date {
     color: #666;
     font-style: italic;
 }
+
+.modal {
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+}
+
+.modal.on {
+    display: flex;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+.modal-buttons button {
+    margin: 0 10px;
+    padding: 6px 12px;
+}

@@ -5,6 +5,56 @@ const autocompleteList = document.getElementById("autocompleteList");
 const button = document.getElementById("addBtn");
 const list = document.getElementById("bookList");
 const errorInput = document.getElementById("errorInput");
+const modalTemplates = {
+    delete: {
+        message: "정말 삭제하시겠습니까?",
+        confirmText: "삭제",
+        cancelText: "취소"
+    },
+    save: {
+        message: "정말 저장하시겠습니까?",
+        confirmText: "저장",
+        cancelText: "취소"
+    },
+    edit: {
+        message: "수정 내용을 저장할까요?",
+        confirmText: "수정",
+        cancelText: "취소"
+    }
+};
+
+function showModal({ message, confirmText = "확인", cancelText = "취소" }) {
+    return new Promise((resolve) => {
+      const modal = document.getElementById("Modal");
+      const messageEl = document.getElementById("modalMessage");
+      const confirmBtn = document.querySelector(".modalConfirm");
+      const cancelBtn = document.querySelector(".modalCancel");
+  
+      messageEl.textContent = message;
+      confirmBtn.textContent = confirmText;
+      cancelBtn.textContent = cancelText;
+      modal.classList.add("on");
+      
+      const cleanup = () => {
+        modal.classList.remove("on");
+        confirmBtn.removeEventListener("click", onConfirm);
+        cancelBtn.removeEventListener("click", onCancel);
+      };
+  
+      const onConfirm = () => {
+        cleanup();
+        resolve(true);
+      };
+      const onCancel = () => {
+        cleanup();
+        resolve(false);
+      };
+  
+      confirmBtn.addEventListener("click", onConfirm);
+      cancelBtn.addEventListener("click", onCancel);
+    });
+}
+  
 
 function createCommentElement({title, author, comment, date}) {
     const li = document.createElement("li");
@@ -30,9 +80,9 @@ function createCommentElement({title, author, comment, date}) {
         li.remove();
     });
     
-    deleteBtn.addEventListener("click", () => {
-        const deleteOk = confirm("정말 삭제하시겠습니까?");
-        if (!deleteOk) return;
+    deleteBtn.addEventListener("click", async() => {
+        const ok = await showModal(modalTemplates.delete);
+        if (!ok) return;
 
         let commentList = JSON.parse(localStorage.getItem("commentList")) || [];
         commentList = commentList.filter(item => !(item.title === title && item.comment === comment && item.date === date));
@@ -117,7 +167,6 @@ button.addEventListener("click", (e) => {
         if (!author) authorInput.style.border = "2px solid red";
     }
 });
-
 
 
 window.addEventListener("DOMContentLoaded", () => {
