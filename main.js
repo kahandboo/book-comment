@@ -11,11 +11,6 @@ const modalTemplates = {
         confirmText: "삭제",
         cancelText: "취소"
     },
-    save: {
-        message: "정말 저장하시겠습니까?",
-        confirmText: "저장",
-        cancelText: "취소"
-    },
     edit: {
         message: "수정 내용을 저장할까요?",
         confirmText: "수정",
@@ -93,7 +88,7 @@ function createCommentElement({title, author, comment, date}) {
     return li;
 }
 
-titleInput.addEventListener("keyup", async (e) => {
+async function fetchBookSuggestions() {
     const query = titleInput.value.trim();
 
     if (query.length < 2) {
@@ -108,6 +103,8 @@ titleInput.addEventListener("keyup", async (e) => {
         autocompleteList.innerHTML = "";
 
         const books = data.items?.slice(0, 5) || [];
+        const fragment = document.createDocumentFragment();
+
         books.forEach(book => {
             const title = book.volumeInfo.title || "제목 없음";
             const authors = book.volumeInfo.authors?.join(", ") || "미상";
@@ -121,11 +118,23 @@ titleInput.addEventListener("keyup", async (e) => {
                 autocompleteList.innerHTML = "";
             });
 
-            autocompleteList.appendChild(li);
+            fragment.appendChild(li);
         });
+
+        autocompleteList.appendChild(fragment);
     } catch (err) {
         console.error("책 검색 중 오류 발생:", err);
     }
+}
+
+let debounceTimer;
+
+titleInput.addEventListener("keyup", async (e) => {
+    clearTimeout(debounceTimer)
+
+    debounceTimer = setTimeout(() => {
+        fetchBookSuggestions();
+    }, 150);
 });
 
 button.addEventListener("click", (e) => {
